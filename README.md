@@ -5,7 +5,7 @@ Kelas : PBP A
 
 # SPARERAVEL
 ## 🔗 Links
-[![PWS](]("C:\Users\nural\OneDrive\Gambar\Screenshot\Screenshot 2024-09-10 192407.png")](http://nur-alya31-spareravel.pbp.cs.ui.ac.id/)
+http://nur-alya31-spareravel.pbp.cs.ui.ac.id/
 ## Tugas 2
 ### Prosedur Pengembangan Proyek Django
 1. **Membuat** *Repository* **GitHub `SPARERAVEL`**
@@ -70,7 +70,6 @@ from django.db import models
 # Create your models here.
 from django.db import models
 
-
 class Product(models.Model):
     name = models.CharField(max_length=255)
     price = models.IntegerField()
@@ -85,7 +84,6 @@ python manage.py migrate
 - Membuat template pada file `main.html`
 ```html
 <h1>{{nama_app}}</h1>
-
 
 <h5>NPM: </h5>
 <p>{{ npm }}<p>
@@ -107,8 +105,6 @@ def show_main(request):
         'name': 'Nur Alya Khairina',
         'class': 'PBP A'
     }
-
-
     return render(request, "main.html", context)
 ```
 - Melakukan routing pada file `urls.py` pada folder `main`;
@@ -116,9 +112,7 @@ def show_main(request):
 from django.urls import path
 from main.views import show_main
 
-
 app_name = 'main'
-
 
 urlpatterns = [
     path('', show_main, name='show_main'),
@@ -129,9 +123,6 @@ urlpatterns = [
 from django.test import TestCase
 from django.test import TestCase, Client
 from django.utils import timezone
-
-
-
 
 class mainTest(TestCase):
     def test_main_url_is_exist(self):
@@ -173,9 +164,9 @@ git push pws main:master
 ### Essai
 **Buatlah bagan yang berisi request client ke web aplikasi berbasis Django beserta responnya dan jelaskan pada bagan tersebut kaitan antara urls.py, views.py, models.py, dan berkas html.**
 
-
-![Gambar Bagan]("C:\Users\nural\Downloads\diagram pbp.png")
-
+![Bagan PBP](https://github.com/user-attachments/assets/c6951068-c4de-45b6-90d3-8e1e01688eb3)
+")
+<img src=""C:\Users\nural\Downloads\bagan pbp.png"" alt="Bagan PBP">
 
 **Jelaskan fungsi** `Git` **dalam pengembangan perangkat lunak!**
 - Git memungkinkan banyak developer untuk bekerja sama  dalam mengembangkan suatu perangkat lunak dengan penggunaan *branching*,
@@ -183,12 +174,11 @@ git push pws main:master
 - Git memberikan keuntungan bagi pengembang untuk memperbaiki *bug* tanpa takut kode hilang atau semakin salah,
 - Setiap perubahan kode, akan secara otomatis diuji oleh Git.
 
-
 **Menurut Anda, dari semua framework yang ada, mengapa framework Django dijadikan permulaan pembelajaran pengembangan perangkat lunak?**
-
 Menurut saya, ini disebabkan fitur-fiturnya yang cocok untuk awal belajar pengembangan perangkat lunak, seperti ORM, *routing* URL yang fleksibel, dan lain sebagainya. Kemudian Django juga membantu pemula dalam mengatur struktur aplikasi karena dalam Django semua sudah diatur dengan standar tertentu. Lalu seperti yang telah saya jelaskan, ORM membantu pemula karena tidak perlu memahami SQL dengan mendalam. 
 
-
 **Mengapa model pada Django disebut sebagai ORM?**
-
 ORM (Object Relation Mapper) hal ini dikarenakan model tersebut memiliki fungsi untuk menjadi jembatan antara database dan objek python tanpa harus menuliskan SQL Queries. ORM ini memetakan atribut objek ke masing-masing bidang tabel. ORM juga dapat mengambil data dengan cara tersebut.
+
+Referensi
+Chen, S., Ahmmed, S., Lal, K., & Deming, C. (2020). Django Web Development Framework: Powering the Modern Web. American Journal of Trade and Policy.
