@@ -165,8 +165,7 @@ git push pws main:master
 **Buatlah bagan yang berisi request client ke web aplikasi berbasis Django beserta responnya dan jelaskan pada bagan tersebut kaitan antara urls.py, views.py, models.py, dan berkas html.**
 
 ![Bagan PBP](https://github.com/user-attachments/assets/c6951068-c4de-45b6-90d3-8e1e01688eb3)
-")
-<img src=""C:\Users\nural\Downloads\bagan pbp.png"" alt="Bagan PBP">
+
 
 **Jelaskan fungsi** `Git` **dalam pengembangan perangkat lunak!**
 - Git memungkinkan banyak developer untuk bekerja sama  dalam mengembangkan suatu perangkat lunak dengan penggunaan *branching*,
