@@ -181,3 +181,224 @@ ORM (Object Relation Mapper) hal ini dikarenakan model tersebut memiliki fungsi 
 
 Referensi
 Chen, S., Ahmmed, S., Lal, K., & Deming, C. (2020). Django Web Development Framework: Powering the Modern Web. American Journal of Trade and Policy.
+
+
+## Tugas 3
+## Menjawab Pertanyaan
+**Jelaskan mengapa kita memerlukan *data delivery* dalam pengimplementasian sebuah platform?**
+Data delivery diperlukan karena untuk mengakses informasi yang diperlukan dengan cara yang efisien karena data delivery memiliki integrasi yang baik dalam sebuah platform. Data delivery yang baik dapat memungkinkan suatu platform berjalan tanpa hambatan meskipun penggunanya meningkat. Data delivery merupakan komponen yang penting dalam implementasi platform, karena apabila tidak ada data delivery yang baik, maka akan memengaruhi kegunaan sebuah platform. 
+
+**Menurutmu, mana yang lebih baik antara XML dan JSON? Mengapa JSON lebih populer dibandingkan XML?**
+Menurut saya, JSON lebih baik daripada XML dalam membuat suatu web. Hal ini sudah pasti dikarenakan JSON mempunyai sintaks yang lebih singkat dan mudah untuk dibaca penggunanya. Berbanding terbalik akan XML yang memiliki tag pembukan dan penutup yang membuatnya lebih panjang sintaksnya. Menurut saya, JSON lebih populer karena kelebihannya dalam keringkasan sintaks, kecepatan pemrosesan, dan efiesen. 
+
+**Jelaskan fungsi dari method `is_valid()` pada form Django dan mengapa kita membutuhkan method tersebut?**
+Menurut django documentation, is_valid() gitunakan oleh objek form untuk memvalidasi data. Metode ini memeriksa apakah data yang dimasukkan ke dalam form memenuhi aturan validasi yang sudah ditetapkan. Alasan kita membutuhkan method ini karena penting untuk memastikan bahwa data yang dimasukkan oleh user itu sesuai dengan format yang diharapkan. Lalu apabila tidak menggunakan is_valid(), maka data yang tidak sesuai dapat masuk ke database.
+
+**Mengapa kita membutuhkan `csrf_token` saat membuat form di Django? Apa yang dapat terjadi jika kita tidak menambahkan `csrf_token` pada form Django? Bagaimana hal tersebut dapat dimanfaatkan oleh penyerang?**
+csrf_token sendiri berfungsi untuk mengecek apakah suatu request POST yang diterima server itu berasal dari sumber aplikasi kita sendiri sehingga dapat mencegah pelaku/penyerang dalam mengirim request palsu atas nama user (memanipulasi request). Apabila suatu form Django tidak menerapkan csrf_token, maka aplikasi akan rentan terserang sebuah tindakan berbahaya.  
+
+**Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara *step-by-step* (bukan hanya sekadar mengikuti tutorial).**
+**1. Membuat Kerangka Views**
+- Membuat folder `templates` dan berkas `base.html` pada direktori utama. Lalu menambahkan isi `base.html` dengan;
+```html
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% block meta %} {% endblock meta %}
+  </head>
+
+  <body>
+    {% block content %} {% endblock content %}
+  </body>
+</html>
+```
+- Mengubah variabel `TEMPLATES` dengan kode;
+```python
+TEMPLATES = [
+    {
+        ...
+        'DIRS': [BASE_DIR / 'templates'], # Mengubah baris ini
+        ...
+    }
+]
+```
+- Mengubah berkas `main.html` dengan kode;
+```html
+{% extends 'base.html' %}
+{% block content %}
+<h1>{{nama_app}}</h1>
+
+<h5>NPM: </h5>
+<p>{{ npm }}<p>
+
+<h5>Name:</h5>
+<p>{{ name }}</p>
+
+<h5>Class:</h5>
+<p>{{ class }}</p>
+{% endblock content %}
+```
+**2. Mengubah Primary Key Menjadi UUID**
+- Menambahkan kode pada file `models.py`
+```python
+import uuid
+from django.db import models
+
+class Product(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    ...
+```
+- Melakukan migrasi
+**3. Membuat Form Input Data dan Menampilkan *Data Product Entry* pada HTML**
+- Membuat file baru dengan nama `forms.py` dengan isi;
+```python
+from django.forms import ModelForm
+from main.models import Product
+
+class ProductForm(ModelForm):
+    class Meta:
+        model = Product
+        fields = ["name", "price", "description", "quantity"]
+```
+- Menambahkan import pada file `views.py`;
+```python
+from django.shortcuts import render, redirect   # Menambahkan redirect
+from main.forms import ProductForm
+from main.models import Product
+```
+- Menambahkan create_product_entry pada file `views.py`
+```python
+def create_product_entry(request):
+    form = ProductForm(request.POST or None)
+    if form.is_valid() and request.method == "POST":
+        form.save()
+        return redirect('main:show_main')
+
+    context = {'form': form}
+    return render(request, "create_product_entry.html", context)
+```
+- Mengubah isi `show_main` dengan menyesuaikan pada file `views.py`
+```python
+def show_main(request):
+    product_entries = Product.objects.all() # Menambahkan baris ini
+    context = {
+        'nama_app' : 'SPARERAVEL',
+        'npm' : '2306275701',
+        'name': 'Nur Alya Khairina',
+        'class': 'PBP A',
+        'product_entries' : product_entries # Menambahkan baris ini
+    }
+
+    return render(request, "main.html", context)
+```
+- Menambahkan import `create_product_entry` pada `urls.py`
+- Menambahkan path ke `urlpatterns` pada `urls.py`
+```python
+urlpatterns = [
+    path('', show_main, name='show_main'),
+    path('create-product-entry', create_product_entry, name='create_product_entry'),
+]
+```
+- Membuat file HTML baru dengan nama `create_product_entry.html` dengan isi;
+```html
+{% extends 'base.html' %} 
+{% block content %}
+<h1>Add New Product Entry</h1>
+
+<form method="POST">
+  {% csrf_token %}
+  <table>
+    {{ form.as_table }}
+    <tr>
+      <td></td>
+      <td>
+        <input type="submit" value="Add Product Entry" />
+      </td>
+    </tr>
+  </table>
+</form>
+
+{% endblock %}
+```
+- Lalu menambahkan kode ini pada `main.html`untuk menampilkan data dalam tabel dan tombol untuk menuju form. 
+```html
+...
+{% if not product_entries %}
+<p>Belum ada data product pada SPARERAVEL.</p>
+{% else %}
+<table>
+  <tr>
+    <th>Product Name</th>
+    <th>Price</th>
+    <th>Description</th>
+    <th>Quantity</th>
+  </tr>
+
+  {% comment %} Berikut cara memperlihatkan data mood di bawah baris ini 
+  {% endcomment %} 
+  {% for product_entry in product_entries %}
+  <tr>
+    <td>{{product_entry.name}}</td>
+    <td>{{product_entry.price}}</td>
+    <td>{{product_entry.description}}</td>
+    <td>{{product_entry.quantity}}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endif %}
+
+<br />
+
+<a href="{% url 'main:create_product_entry' %}">
+  <button>Add New Product Entry</button>
+</a>
+{% endblock content %}
+```
+**4. Mengembalikan Data dalam Bentuk XML, JSON, dan Berdasarkan ID dalam bentuk XML dan JSON**
+- Menambahkan beberapa import pada file `views.py`;
+```python
+from django.http import HttpResponse
+from django.core import serializers
+```
+- Menambahkan beberapa fungsi pada file `views.py`;
+```python
+def show_xml(request):
+    data = Product.objects.all()
+    return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
+
+def show_json(request):
+    data = Product.objects.all()
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+
+def show_xml_by_id(request, id):
+    data = Product.objects.filter(pk=id)
+    return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
+
+def show_json_by_id(request, id):
+    data = Product.objects.filter(pk=id)
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+```
+- Lalu, menambahkan import fungsi pada `urls.py`
+```python
+from main.views import show_main, create_product_entry, show_xml, show_json, show_xml_by_id, show_json_by_id
+```
+- Dan, terakhir menambahkan path URL ke dalam `urlpatterns`;
+```python
+urlpatterns = [
+    ...
+    path('xml/', show_xml, name='show_xml'),
+    path('json/', show_json, name='show_json'),
+    path('xml/<str:id>/', show_xml_by_id, name='show_xml_by_id'),
+    path('json/<str:id>/', show_json_by_id, name='show_json_by_id'),
+
+]
+```
+
+**Screenshot URL Postman**
+![Postman XML](images/Screenshot%20(1748).png)
+![Postman JSON](images/Screenshot%20(1749).png)
+![Postman XML with ID](images/Screenshot%20(1750).png)
+![Postman JSON with ID](images/Screenshot%20(1751).png)
