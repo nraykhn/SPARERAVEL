@@ -398,7 +398,11 @@ urlpatterns = [
 ```
 
 **Screenshot URL Postman**
+XML
 ![Postman XML](images/Screenshot%20(1748).png)
+JSON
 ![Postman JSON](images/Screenshot%20(1749).png)
+XML With ID
 ![Postman XML with ID](images/Screenshot%20(1750).png)
+JSON With ID
 ![Postman JSON with ID](images/Screenshot%20(1751).png)
