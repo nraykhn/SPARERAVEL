@@ -17,6 +17,7 @@ def show_main(request):
 
     return render(request, "main.html", context)
 
+# Untuk membuat form add product 
 def create_product_entry(request):
     form = ProductForm(request.POST or None)
     if form.is_valid() and request.method == "POST":
