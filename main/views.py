@@ -25,11 +25,12 @@ def create_product_entry(request):
 
     context = {'form': form}
     return render(request, "create_product_entry.html", context)
+
 # Untuk Menampilkan Data Berbentuk XML
 def show_xml(request):
     data = Product.objects.all()
     return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
-
+# Untuk Menampilkan Data Berbentuk JSON
 def show_json(request):
     data = Product.objects.all()
     return HttpResponse(serializers.serialize("json", data), content_type="application/json")
