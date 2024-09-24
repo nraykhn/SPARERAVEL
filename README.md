@@ -406,3 +406,51 @@ XML With ID
 ![Postman XML with ID](images/Screenshot%20(1750).png)
 JSON With ID
 ![Postman JSON with ID](images/Screenshot%20(1751).png)
+
+## Tugas 4
+## Menjawab Pertanyaan
+1. Apa perbedaan antara HttpResponseRedirect() dan redirect()
+HTTPResponseRedirect(): Akan menghasilkan kode status HTTP 302 (Found/Moved Temporarily). Kemudian, kita harus untuk menuliskan path-nya secara manual dan lengkap atau absolut. Ini digunakan ketika ingin mengalihkan user untuk ke halaman lain. Contohnya adalah
+```python
+from django.http import HttpResponseRedirect
+
+return HttpResponseRedirect("http://example.com/")
+```
+Ini akan mengarahkan user ke "http://example.com/". Hal ini biasanya digunakan setelah selesai/berhasil melakukan sesuatu (user mengirim form).
+redirect(): Berbeda dengan HTTPResponseRedirect() yang harus menuliskan URL secara manual, redirect dapat memasukkan URL, nama view, atau objek model, kemudian tidak hanya menerima URL atauu path absolut saja. Contohnya
+```python
+from django.shortcuts import redirect
+redirect("/example/")
+redirect("home_view")
+```
+
+2. Jelaskan cara kerja penghubungan model Product dengan User!
+Potongan kode di bawah untuk menghubungkan satu product entry dengan satu user. Hubungan ini menggunakan ForeignKey, yang memungkinkan untuk menentukan siapa pemilik product entry tersebut.  
+```python
+user = models.ForeignKey(User, on_delete=models.CASCADE)
+```
+Kemudian, on_delete=models.CASCADE membuat program jika user tersebut dihapus, maka semua product yang terkait dengan user tersebut juga akan dihapus.
+Pada views, produk yang dimiliki oleh pengguna yang sedang login saat ini akan ditampilkan, dan produk baru yang dibuat oleh pengguna otomatis akan dikaitkan dengan akun pengguna yang sedang login. 
+
+3. Apa perbedaan antara authentication dan authorization, apakah yang dilakukan saat pengguna login? Jelaskan bagaimana Django mengimplementasikan kedua konsep tersebut.
+Perbedaan antara authentication dan authorization adalah, 
+Authentication: Untuk memastikan siapa pengguna dengan melakukan verifikasi username dan password yang dilakukan ketika pengguna mencoba masuk ke sistem.
+Authorization : Untuk menentukan apa yang bisa dilakukan oleh pengguna dengan memeriksa hak akses dari si pengguna yang dilakukan setelah pengguna berhasil untuk login dan mencoba mengakses resource.
+
+Hal-hal yang dilakukan saat pengguna login yaitu authentication, sistem memeriksa kredensial (username dan password) terhadap database. Setelah berhasil login, Django akan membuatkan session untuk pengguna yang disimpan dalam cookie. 
+
+Menurut, django documentation, sistem autentikasi Django menangani authentication dan authorization. Sistem authentication dengan menggunakan `AuthenticationForm()` yaitu form bawaan yang otomatis memverifikasi kredensial user. Fungsi ini memeriksa apakah data yang dimasukkan sudah cocok dengan yang ada di database. Jika sesuai bisa langsung menggunakan fungsi `login()`. Kemudian, untuk sistemm authorization yaitu dengan menggunakan  
+```python
+@login_required(login_url='/login')
+def show_main(request):
+```
+Kode di atas mengharuskan pengguna untuk login dulu sebelum bisa mengakses show_main. 
+
+4. Bagaimana Django mengingat pengguna yang telah login? Jelaskan kegunaan lain dari cookies dan apakah semua cookies aman digunakan?
+Django mengingat pengguna yang telah login dengan autentikasi, session, dan juga cookies. Setelah autentikasi berhasil, pengguna akan disimpan di session server-side. Kemudian Django dapat menggunakan cookies untuk menyimpan informasi tambahan seperti last login. Cookies disimpan di perangkat pengguna dan dikirimkan bersama dengan setiap HTTP Request ke server. 
+
+Selain kegunaan di atas, cookies dapat digunakan untuk menyimpan preferensi pengguna, mengenali pengguna sehingga pengguna tidak memerlukan login ulang, jika pada situs e-commerce maka cookies mengelola keranjang belanja pengguna. 
+
+Tidak semua cookies aman untuk digunakan, cookies dapat entan terhadap serangan keamanan jika tidak dikelola dengan baik, sehingga Django memiliki fitur untuk menyimpan informasi sensitif di database bukan di cookies.
+
+5. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).
