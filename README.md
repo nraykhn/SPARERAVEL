@@ -727,6 +727,316 @@ DEBUG = not PRODUCTION
 ## Tugas 5
 ## Menjawab Pertanyaan
 **1. Jika terdapat beberapa CSS selector untuk suatu elemen HTML, jelaskan urutan prioritas pengambilan CSS selector tersebut!**
+Urutan prioritas pengambilan CSS selector yaitu;
+1. Inline styles
+2. ID Selector (dengan menggunakan #),
+3. Class Selector (dengan menggunakan .), dan
+4. Element Selector (tanpa menggunakan # atau .).
+
+Hal ini dibuktikan apabila ketika kita membuat suatu HTML berisikan 
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Element selector */
+        p {
+            color: blue;
+        }
+
+        /* Class selector */
+        .text {
+            color: green;
+        }
+
+        /* ID selector */
+        #unique {
+            color: purple;
+        }
+
+        /* Inline style akan menggantikan semua di atas */
+    </style>
+</head>
+<body>
+    <p>This is a regular paragraph.</p>
+    <p class="text">This is a paragraph with a class.</p>
+    <p id="unique" class="text">This is a paragraph with an ID and a class.</p>
+    <p id="unique" class="text" style="color: red;">This is a paragraph with an ID, a class, and an inline style.</p>
+</body>
+</html>
+```
+maka akan mengeluarkan, 
+This is a regular paragraph. (Berwarna biru)
+This is a paragraph with a class. (Berwarna hijau)
+This is a paragraph with an ID and a class. (Berwarna ungu)
+This is a paragraph with an ID, a class, and an inline style. (Berwarna merah)
+dalam contoh di atas;
+Paragraf pertama akan berwarna biru karena hanya menggunakan type selector p dan tidak ada class, ID, atau inline style. 
+Paragraf kedua akan berwarna hijau karena selector class .text lebih spesifik daripada selector elemen p.
+Paragraf ketiga akan berwarna ungu karena selector ID #unique lebih spesifik daripada selector class .text dan type selector p.
+Paragraf keempat akan berwarna merah karena inline style memiliki prioritas tertinggi dan akan menggantikan aturan dari ID, class, atau type selector.
+
 **2. Mengapa responsive design menjadi konsep yang penting dalam pengembangan aplikasi web? Berikan contoh aplikasi yang sudah dan belum menerapkan responsive design!**
+Ada beberapa alasan mengapa responsive design menjadi konsep yang penting, antara lain;
+1. Efektivias biaya, dengan responsive design, dapat menghemat biaya dengan menghilangkan biaya untuk membayar situs seluler karena satu responsive design dapat menarik pengunjung dari semua pengguna perangkat yang berbeda. Responsive design memungkinkan pengembang mengelola satu kode sumber yang dapat berjalan di semua perangkat,
+2. Meningkatkan pengalaman pengguna, pengguna mendapatkan tampilan yang optimal meskipun perangkat yang digunakan berbeda-beda, sehingga memberikan pengalaman pengguna yang lebih baik dan konsisten,
+3. Search engine optimization , atau SEO, adalah strategi yang digunakan oleh banyak perusahaan untuk membantu meningkatkan peringkat mereka di halaman pencarian Google. Apabila suatu web menggunakan responsive design, maka lebih mungkin muncul dalam hasil pencarian yang lebih baik.
+
+Contoh aplikasi yang sudah menerapkan responsive design adalah Tokopedia dan yang belum menerapkan responsive design adalah beberapa situs web pemerintahan.
+
 **3.Jelaskan perbedaan antara margin, border, dan padding, serta cara untuk mengimplementasikan ketiga hal tersebut! Jelaskan konsep flex box dan grid layout beserta kegunaannya!**
+Margin, border, dan padding adalah bagian dari box model CSS yang menentukan tata letak dan spacing elemen HTML. Perbedaan antara adalah margin, border, dan padding adalah
+1. Margin: Ruang di luar border elemen. Margin mengatur jarak antara elemen yang berbeda (kotak) dan antara elemen (kotak) dengan tepi layar. 
+2. Border: Garis yang mengelilingi konten dan padding elemen.
+3. Padding: Ruang antara konten elemen dan bordernya. Padding menentukan spasi dalam, yang dapat mengontrol seberapa banyak warna latar belakang terlihat di sekitar konten.
+Contoh penggunaannya adalah, misal kita ingin membuat kotak yang memiliki lebar total 350px dan tinggi total 80px;
+```css
+div {
+  width: 320px;
+  height: 50px;
+  padding: 10px;
+  border: 5px solid gray;
+  margin: 0;
+}
+```
+Sehingga perhitungannya:
+  320px (lebar area konten)
++ 20px (padding kiri + padding kanan)
++ 10px (batas kiri + batas kanan)
+= 350px (lebar total)
+
+  50px (tinggi area konten)
++ 20px (padding atas + padding bawah)
++ 10px (batas atas + batas bawah)
+= 80px (tinggi total)
+
+Konsep flex box dan grid layout yaitu;
+Flexbox adalah model layout satu dimensi yang dirancang untuk menyediakan cara yang lebih efisien dalam mengatur, meratakan, dan mendistribusikan ruang di antara item-item dalam sebuah container, bahkan saat ukurannya tidak diketahui. Flexbox dapat:
+1. Membuat layout responsif dengan mudah
+2. Mengatur alignment dan distribusi ruang antar item
+3. Mengubah urutan tampilan item tanpa mengubah struktur HTML
+4. Membuat navigasi dan menu yang fleksibel
+5. Menyusun elemen dalam satu baris atau kolom
+
+Grid Layout adalah sistem layout dua dimensi yang memungkinkan developer untuk membuat layout kompleks dengan lebih mudah dan konsisten. Grid membagi container menjadi baris dan kolom.
+Grid Layout dapat;
+1. Membuat layout kompleks dengan mudah
+2. Mengatur konten dalam baris dan kolom secara bersamaan
+3. Membuat desain responsifresponsive design yang konsisten
+4. Mengelola whitespace dalam layout dengan lebih baik
+
 **4. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial)!**
+1. Menambahkan tag `<meta name="viewport">` dalam templates/base.html.
+2. Menambahkan kode di bawah ini pada `base.html`;
+```html
+...
+{% endblock meta %}
+<script src="https://cdn.tailwindcss.com">
+</script>
+...
+```
+3. Menambahkan fungsi baru `edit_product` pada views.py;
+```python
+def edit_product(request, id):
+    product = Product.objects.get(pk = id)
+    form = ProductForm(request.POST or None, instance=product)
+
+    if form.is_valid() and request.method == "POST":
+        form.save()
+        return HttpResponseRedirect(reverse('main:show_main'))
+
+    context = {'form': form}
+    return render(request, "edit_product.html", context)
+```
+4. Menambahkan import `view.py`
+```python
+from django.shortcuts import .., reverse
+from django.http import .., HttpResponseRedirect
+```
+5. Membuat HTML baru dengan `edit_product.html` pada `main/templates`
+```html
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<h1>Edit Mood</h1>
+
+<form method="POST">
+    {% csrf_token %}
+    <table>
+        {{ form.as_table }}
+        <tr>
+            <td></td>
+            <td>
+                <input type="submit" value="Edit Product"/>
+            </td>
+        </tr>
+    </table>
+</form>
+{% endblock %}
+```
+6. Menambahkan import fungsi `edit_product` pada `urls.py` dan menambahkan path url
+```python
+from main.views import edit_mood
+path('edit-product/<uuid:id>', edit_product,name='edit_product'),
+```
+
+7. Menambahkan kode ini pada `main.html` 
+```html
+<td>
+        <a href="{% url 'main:edit_product' product_entry.pk %}">
+            <button>
+                Edit
+            </button>
+        </a>
+    </td>
+</tr>
+```
+
+8. Menambahkan fungsi baru `delete_product` pada `views.py`
+```python
+def delete_product(request, id):
+    product = Product.objects.get(pk = id)
+    product.delete()
+    return HttpResponseRedirect(reverse('main:show_main'))
+```
+
+9. Menambahkan import fungsi `delete_product` pada `urls.py` dan menambahkan path url
+```python
+from main.views import delete_product
+path('delete/<uuid:id>', delete_product, name='delete_product'), 
+...
+```
+
+10. Menambahkan kode di bawah ini ke dalam file `main.html`;
+```html
+<td>
+        <a href="{% url 'main:edit_mood' mood_entry.pk %}">
+            <button>
+                Edit
+            </button>
+        </a>
+    </td>
+    <td>
+        <a href="{% url 'main:delete_mood' mood_entry.pk %}">
+            <button>
+                Delete
+            </button>
+        </a>
+    </td>
+</tr>
+```
+
+11. Membuat HTML baru dengan nama `navbar.html` pada folder `templates/` dan mengisinya dengan kode;
+```html
+<nav class="bg-gray-800 shadow-lg fixed top-0 left-0 z-40 w-screen">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+            <div class="flex items-center">
+                <a href="{% url 'main:show_main' %}" class="text-2xl font-bold text-yellow-500">SPARERAVEL</a>
+            </div>
+            <div class="hidden md:flex items-center">
+                <a href="{% url 'main:show_main' %}" class="block text-gray-300 hover:text-white px-3 py-2 rounded-md text-base font-medium">Home</a>
+                <a href="#" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-base font-medium">Products</a>
+                <a href="#" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-base font-medium">Categories</a>
+                <a href="#" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-base font-medium">Cart</a>
+                {% if user.is_authenticated %}
+                    <span class="text-gray-300 mr-4">Hello, {{ user.username }}</span>
+                    <a href="{% url 'main:logout' %}" class="text-center bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition duration-300">
+                        Logout
+                    </a>
+                {% else %}
+                    <a href="{% url 'main:login' %}" class="text-center bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300 mr-2">
+                        Login
+                    </a>
+                    <a href="{% url 'main:register' %}" class="text-center bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition duration-300">
+                        Register
+                    </a>
+                {% endif %}
+            </div>
+            <div class="md:hidden flex items-center">
+                <button class="mobile-menu-button">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                        <path d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mobile-menu hidden md:hidden px-4 w-full">
+        <div class="pt-2 pb-3 space-y-1 mx-auto">
+        <a href="{% url 'main:show_main' %}" class="block text-gray-300 hover:text-white px-3 py-2 rounded-md text-base font-medium">Home</a>
+        <a href="#" class="block text-gray-300 hover:text-white px-3 py-2 rounded-md text-base font-medium">Products</a>
+        <a href="#" class="block text-gray-300 hover:text-white px-3 py-2 rounded-md text-base font-medium">Categories</a>
+        <a href="#" class="block text-gray-300 hover:text-white px-3 py-2 rounded-md text-base font-medium">Cart</a>
+            {% if user.is_authenticated %}
+                <span class="block text-gray-300 px-3 py-2">Hello, {{ user.username }}</span>
+                <a href="{% url 'main:logout' %}" class="block text-center bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition duration-300">
+                    Logout
+                </a>
+            {% else %}
+                <a href="{% url 'main:login' %}" class="block text-center bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300 mb-2">
+                    Login
+                </a>
+                <a href="{% url 'main:register' %}" class="block text-center bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition duration-300">
+                    Register
+                </a>
+            {% endif %}
+        </div>
+    </div>
+    <script>
+        const btn = document.querySelector("button.mobile-menu-button");
+        const menu = document.querySelector(".mobile-menu");
+
+        btn.addEventListener("click", () => {
+            menu.classList.toggle("hidden");
+        });
+    </script>
+  </nav>
+```
+
+12. Menautkan navbar tersebut ke dalam `main.html`, `create_mood_entry.html,` dan `edit_mood.html` yang berada di subdirektori `main/templates/`
+```html
+{% extends 'base.html' %}
+{% block content %}
+{% include 'navbar.html' %}
+...
+{% endblock content%}
+```
+
+13. Pada settings.py, tambahkan middleware WhiteNoise.
+```python
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', #Tambahkan tepat di bawah SecurityMiddleware
+    ...
+]
+```
+
+14. Konfigurasi pada settings.py dengan menambahkan pada variabel  `STATIC_ROOT`, `STATICFILES_DIRS`, dan `STATIC_URL`;
+```python
+STATIC_URL = '/static/'
+if DEBUG:
+    STATICFILES_DIRS = [
+        BASE_DIR / 'static' 
+    ]
+else:
+    STATIC_ROOT = BASE_DIR / 'static' 
+```
+15. Membuat `global.css` pada `/static/css` 
+16. Memodifikasi `base.html` dengan menambahkan kode;
+```html
+ <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'css/global.css' %}"/>
+  </head>
+```
+17. Modifikasi `global.css` pada `static/css/global.css`;
+18. Mengkustomisasi `register.html` pada `main/templates/`
+19. Membuat dan mengkustomisasi file `card_info.html` pada `main/templates`
+20. Membuat dan mengkustomisasi file `card_product.html` pada `main/templates`
+21. Menambahkan `card_info.html`, `card_product.html`, dan `sedih-banget.png` ke template `main.html`
+22. Mengkustomisasi `create_mood_entry.html` pada `main/templates/`
+23. Mengkustomisasi `edit_product.html` pada `main/templates/`
