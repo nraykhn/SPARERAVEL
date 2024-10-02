@@ -772,6 +772,7 @@ This is a regular paragraph. (Berwarna biru)
 This is a paragraph with a class. (Berwarna hijau)
 This is a paragraph with an ID and a class. (Berwarna ungu)
 This is a paragraph with an ID, a class, and an inline style. (Berwarna merah)
+
 dalam contoh di atas;
 Paragraf pertama akan berwarna biru karena hanya menggunakan type selector p dan tidak ada class, ID, atau inline style. 
 Paragraf kedua akan berwarna hijau karena selector class .text lebih spesifik daripada selector elemen p.
