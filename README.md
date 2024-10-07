@@ -1046,7 +1046,17 @@ else:
 ## Tugas 6
 ## Menjawab Pertanyaan
 **1. Jelaskan manfaat dari penggunaan JavaScript dalam pengembangan aplikasi web!**
+
+Manfaat JavaScript antara lain adalah;
+1. Memungkinkan elemen pada halaman web menjadi interaktif
+2. Memanipulasi struktur, gaya dan konten halaman web secara dinamis melalui Document Object Model
+3. Melalui AJAX, JavaScript dapat melakukan permintaan ke server tanpa memuat ulang halaman (asinkron)
+4. Mengurangi beban server dan meningkatkan kecepatan aplikasi secara keseluruhan
+5. Memungkinkan pengembang menjalankan tugas-tugas tanpa menghambat proses utama (main thread).
+
 **2.Jelaskan fungsi dari penggunaan `await` ketika kita menggunakan `fetch()`! Apa yang akan terjadi jika kita tidak menggunakan `await`?**
+
+
 **3. Mengapa kita perlu menggunakan decorator `csrf_exempt` pada *view* yang akan digunakan untuk AJAX POST?**
 **4. Pada tutorial PBP minggu ini, pembersihan data input pengguna dilakukan di belakang (*backend*) juga. Mengapa hal tersebut tidak dilakukan di *frontend* saja?**
 **5. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial)!**
