@@ -12,17 +12,20 @@ from django.core import serializers
 from django.shortcuts import render, redirect, reverse   # Tambahkan import redirect di baris ini
 from main.forms import ProductForm
 from main.models import Product
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from django.utils.html import strip_tags
 
 # Create your views here.
 @login_required(login_url='/login')
 def show_main(request):
-    product_entries = Product.objects.filter(user=request.user)
+    
     context = {
         'nama_app' : 'SPARERAVEL',
         'npm' : '2306275701',
         'name': request.user.username,
         'class': 'PBP A',
-        'product_entries' : product_entries,
+        
         'last_login': request.COOKIES['last_login'],
     }
 
@@ -42,12 +45,12 @@ def create_product_entry(request):
 
 # Untuk Menampilkan Data Berbentuk XML
 def show_xml(request):
-    data = Product.objects.all()
+    data = Product.objects.filter(user=request.user)
     return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
 
 # Untuk Menampilkan Data Berbentuk JSON
 def show_json(request):
-    data = Product.objects.all()
+    data = Product.objects.filter(user=request.user)
     return HttpResponse(serializers.serialize("json", data), content_type="application/json")
 
 # Untuk Menampilkan Data Berbentuk XML with ID
@@ -77,11 +80,13 @@ def login_user(request):
       form = AuthenticationForm(data=request.POST)
 
       if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            response = HttpResponseRedirect(reverse("main:show_main"))
-            response.set_cookie('last_login', str(datetime.datetime.now()))
-            return response
+        user = form.get_user()
+        login(request, user)
+        response = HttpResponseRedirect(reverse("main:show_main"))
+        response.set_cookie('last_login', str(datetime.datetime.now()))
+        return response
+      else:
+        messages.error(request, "Invalid username or password. Please try again.")
    else:
       form = AuthenticationForm(request)
    context = {'form': form}
@@ -115,3 +120,22 @@ def delete_product(request, id):
     product.delete()
     # Kembali ke halaman awal
     return HttpResponseRedirect(reverse('main:show_main'))
+
+
+@csrf_exempt
+@require_POST
+def add_product_entry_ajax(request):
+    name = strip_tags(request.POST.get("name"))
+    price = request.POST.get("price")
+    description = strip_tags(request.POST.get("description"))
+    quantity = request.POST.get("quantity")
+    user = request.user
+
+    new_product = Product(
+        name=name, price=price,
+        description=description, quantity=quantity,
+        user=user
+    )
+    new_product.save()
+
+    return HttpResponse(b"CREATED", status=201)

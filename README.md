@@ -1041,3 +1041,12 @@ else:
 21. Menambahkan `card_info.html`, `card_product.html`, dan `sedih-banget.png` ke template `main.html`
 22. Mengkustomisasi `create_mood_entry.html` pada `main/templates/`
 23. Mengkustomisasi `edit_product.html` pada `main/templates/`
+
+
+## Tugas 6
+## Menjawab Pertanyaan
+**1. Jelaskan manfaat dari penggunaan JavaScript dalam pengembangan aplikasi web!**
+**2.Jelaskan fungsi dari penggunaan `await` ketika kita menggunakan `fetch()`! Apa yang akan terjadi jika kita tidak menggunakan `await`?**
+**3. Mengapa kita perlu menggunakan decorator `csrf_exempt` pada *view* yang akan digunakan untuk AJAX POST?**
+**4. Pada tutorial PBP minggu ini, pembersihan data input pengguna dilakukan di belakang (*backend*) juga. Mengapa hal tersebut tidak dilakukan di *frontend* saja?**
+**5. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial)!**
