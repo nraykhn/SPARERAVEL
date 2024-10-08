@@ -1055,8 +1055,60 @@ Manfaat JavaScript antara lain adalah;
 5. Memungkinkan pengembang menjalankan tugas-tugas tanpa menghambat proses utama (main thread).
 
 **2.Jelaskan fungsi dari penggunaan `await` ketika kita menggunakan `fetch()`! Apa yang akan terjadi jika kita tidak menggunakan `await`?**
+`await` digunakan bersama fetch() untuk menangani operasi asinkron dengan cara yang lebih mudah dibaca dan dipahami. `await`membuat eksekusi kode berhenti sampai Promise yang dikembalikan oleh fetch() selesai (resolved) atau gagal (rejected).
+
+Apabila kita tidak menggunakan `await`, maka kode akan terus dieksekusi tanpa menunggu fetch() selesai, yang bisa menyebabkan masalah jika kode selanjutnya bergantung pada hasil fetch. fetch() akan langsung mengembalikan Promise, bukan hasil aktual dari permintaan.
+
+Note: *promise* adalah objek yang merepresentasikan penyelesaian atau kegagagalan dalam operasi asinkronus.
 
 
 **3. Mengapa kita perlu menggunakan decorator `csrf_exempt` pada *view* yang akan digunakan untuk AJAX POST?**
+`@csrf_exempt` digunakan untuk menonaktifkan pemeriksaan CSRF pada view yang akan menerima AJAX POST request. Kedua, menggunakan `csrf_exempt` pada *view* tertentu memungkinkan developer untuk lebih mudah menangani permintaan AJAX tanpa harus secara manual menyertakan token CSRF di setiap permintaan. Kemudian, dengan `csrf_exempt`, kita dapat memilih *view* mana yang memerlukan perlindungan tersebut (fleksibel).
+
 **4. Pada tutorial PBP minggu ini, pembersihan data input pengguna dilakukan di belakang (*backend*) juga. Mengapa hal tersebut tidak dilakukan di *frontend* saja?**
+Apabila hanya dilakukan di frontend saja, ada kemungkinan dapat di bypass oleh pelaku serangan siber (lebih rentan terhadap serangan). Oleh karena itu menambahkan pembersihan data input di backend juga diperlukan. Verifikasi di backend sebagai pertahanan lapis pertama terhadap serangan XSS, dan lain-lainnya. Validasi di backend memastikan bahwa data yang diterima selalu memenuhi kriteria yang diinginkan. Kemudian pada backend, menjamin konsistensi data karena validasi lebih kompleks. 
+
 **5. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial)!**
+1. Menambahkan error message pada view login_user di views.py
+2. Membuat fungsi untuk menambahkan product dengan menggunakan AJAX;
+a. Menambahkan import `csrf_exempt` dan `require_POST`,
+b. Membuat fungsi baru pada views.py dengan nama   `add_product_entry_ajax` dengan mengguakan decorator yang sudah diimport
+3. Melakukan routing fungsi `add_product_entry_ajax`; menambahkan import fungsi dan path url
+4. Menampilkan data Product dengan fetch();
+a. Menghapus baris ini dalam `views.py`
+```python
+mood_entries = MoodEntry.objects.filter(user=request.user)
+```
+dan 
+```python
+'mood_entries': mood_entries,
+```
+b. Ubah baris pertama pada `show_json` dan `show_xml` di `views.py` dengan;
+```python
+data = Product.objects.filter(user=request.user)
+```
+c. Menghapus bagian block conditional `product_entries` lalu menggantinya dengan 
+```html
+<div id="mood_entry_cards"></div>
+```
+d. Menambahkan `<script>`, fungsi getProductEntries(), refreshProductEntries().
+5. Membuat modal sebagai form 
+a. Implementasi modal (Tailwind) pada aplikasi
+b. Menambahkan fungsi-fungsi JavaScript seperti showModal() dan hideModal()
+c. Menambahkan tombol baru sebagai tombol penambahan data dengan AJAX
+
+6. Menambahkan data Product dengan AJAX
+a. Membuat fungsi addProductEntry() pada block `<script>`
+b. Menambahkan event listener pada form yang ada di modal untuk menjalankan addProductEntry()
+
+7. Melindungi aplikasi dari XSS
+a. Menambahkan import `strip_tags` pada `views.py` dan `forms.py`
+b. Menggunakan strip_tags pada fungsi add_product_entry_ajax
+c. Menambahkan method clean_(field yang menggunakan strip_tags)
+
+8. Membersihkan data dengan DOMPurify
+a. Menambahkan kode ini pada `main.html`
+```html
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"></script>
+```
+b. Lalu, menambahkan DOMPurify pada field yang menggunakan strip_tags.
